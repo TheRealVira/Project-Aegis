@@ -1,0 +1,19 @@
+apiVersion: v2
+name: aegis
+description: Self-healing infrastructure demo
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+dependencies:
+  - name: grafana
+    version: 7.0.19
+    repository: "https://grafana.github.io/helm-charts"
+  - name: prometheus
+    version: 22.6.7  # Latest version as of writing
+    repository: "https://prometheus-community.github.io/helm-charts"
+  - name: example1-service
+    version: 0.1.0
+    repository: "file://../example1-service"
+  - name: example2-service
+    version: 0.1.0
+    repository: "file://../example2-service"

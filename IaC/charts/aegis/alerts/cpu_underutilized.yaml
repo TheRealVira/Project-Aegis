@@ -1,0 +1,51 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: CPU Alerts
+    folder: Aegis
+    interval: 10s
+    rules:
+      - uid: cpu_underutilized
+        title: CPU Underutilized
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            model:
+              editorMode: code
+              expr: (sum(rate(container_cpu_usage_seconds_total{namespace="demo"}[5m])) by (pod) / sum(kube_pod_container_resource_limits{namespace="demo", resource="cpu"}) by (pod)) < 0.1
+              legendFormat: '{{pod}}'
+              range: true
+              intervalMs: 15000
+          - refId: B
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - A
+                  reducer:
+                    type: last
+                  type: query
+              type: classic_conditions
+        noDataState: OK
+        execErrState: Error
+        for: 30m
+        annotations:
+          description: "{{ $labels.pod }} is using less than 10% of its CPU limit for 30 minutes."
+          summary: "CPU underutilized for {{ $labels.pod }}"
+        labels:
+          severity: info
+          category: resource

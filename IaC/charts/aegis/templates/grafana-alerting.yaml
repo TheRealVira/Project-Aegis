@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-grafana-alerting
+  labels:
+    grafana_alerting: "1"
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  cpu_near_limit.yaml: |
+{{ .Files.Get "alerts/cpu_near_limit.yaml" | indent 4 }}
+  cpu_underutilized.yaml: |
+{{ .Files.Get "alerts/cpu_underutilized.yaml" | indent 4 }}
+  hpa_scaling.yaml: |
+{{ .Files.Get "alerts/hpa_scaling.yaml" | indent 4 }}
